@@ -6,7 +6,7 @@ import tkinter as tk
 from functools import partial
 from tkinter import PhotoImage
 from PIL import Image,ImageTk
-
+import os
 class Hub:
 
     def __init__(self,root):
@@ -15,35 +15,35 @@ class Hub:
         self.d_r = Retriver(self.config.get("PATHS","csv_path"))
         self.root = root
         self.root.title("Company Hub")
-        self.root.geometry("400x300")  # Imposta una dimensione per la finestra, se necessario
+        self.root.geometry("400x400")  # Imposta una dimensione per la finestra, se necessario
         # Crea un pannello (Frame) per contenere i record
-        self.panel = tk.Frame(self.root)
-        self.panel.pack(padx=10, pady=10, fill="both", expand=True)
-        self.__create_record_widgets(self.panel)
-
+        self.canvas = tk.Canvas(root)
+        self.scrollable_frame = tk.Frame(self.canvas)
+        self.scrollbar = tk.Scrollbar(root, orient="vertical", command=self.canvas.yview)
+        
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
+        self.__create_record_widgets()
 
     def __clickEvent(self,record):
-        print(f"You selected {record["Name"]}")
-        #webbrowser.open(record["Link"])
+        print(f"You selected {record.Name}")
+        webbrowser.open(record.Link)
 
-    def __create_record_widgets(self,parent):
+    def __create_record_widgets(self):
         df = self.d_r.getCsvData()
         for record in df.itertuples(index=False):
-            if record.Image == "nan" or record.Image == None:
-                image = PhotoImage(record.Image)
-            else:
-                image = PhotoImage(self.config.get("PATHS","placeholder_path"))  
             button = tk.Button(
-            parent,
+            self.scrollable_frame,
             text=f"{record.Name}\n{record.Description}",
-            image=image,
-            compound="top",  # Immagine sopra al testo
-            command=partial(self.__clickEvent, record),
-            width=20,
-            height=100  # Imposta un'altezza fissa se necessario
-        )
-        #button.image = image  # Conserva una riferimento all'immagine per evitare che venga distrutta dal garbage collector
-        button.pack(pady=5, fill="x", padx=10)  # Usa 'fill="x"' per far sì che il pannello si adatti
+            command=lambda r=record: self.__clickEvent(r),
+            width = 50,
+            height=10,  # Imposta un'altezza fissa se necessario
+            anchor="center"
+            )
+            button.pack(pady=5, fill="x", padx=10)  # Usa 'fill="x"' per far sì che il pannello si adatti
 
 
 

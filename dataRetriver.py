@@ -20,5 +20,6 @@ class Retriver:
             exit()
 
     def getCsvData(self):
+       self.csv_df['Id'] = range(1, len(self.csv_df) + 1)
        return self.csv_df
     
