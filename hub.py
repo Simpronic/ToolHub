@@ -7,11 +7,18 @@ from functools import partial
 from tkinter import PhotoImage
 from PIL import Image,ImageTk
 import os
+import sys
 class Hub:
+
+    def __getCFGPath(self):
+        if(getattr(sys,'frozen',False)):
+            return os.path.join(sys._MEIPASS,'configs','config.cfg')
+        else:
+            return os.path.join(os.path.dirname(__file__),"configs","config.cfg")
 
     def __init__(self,root):
         self.config = cp.ConfigParser()
-        self.config.read('configs/config.cfg')
+        self.config.read(self.__getCFGPath())
         self.d_r = Retriver(self.config.get("PATHS","csv_path"))
         self.root = root
         self.root.title("Company Hub")
@@ -27,7 +34,7 @@ class Hub:
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.__create_record_widgets()
-
+        
     def __clickEvent(self,record):
         print(f"You selected {record.Name}")
         webbrowser.open(record.Link)
