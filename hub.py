@@ -22,7 +22,8 @@ class Hub:
         self.d_r = Retriver(self.config.get("PATHS","csv_path"))
         self.root = root
         self.root.title("Company Hub")
-        self.root.geometry("400x400")  # Imposta una dimensione per la finestra, se necessario
+        self.root.geometry("600x400")  # Imposta una dimensione per la finestra, se necessario
+        self.root.resizable(False,False)
         # Crea un pannello (Frame) per contenere i record
         self.canvas = tk.Canvas(root)
         self.scrollable_frame = tk.Frame(self.canvas)
@@ -46,7 +47,7 @@ class Hub:
             self.scrollable_frame,
             text=f"{record.Name}\n{record.Description}",
             command=lambda r=record: self.__clickEvent(r),
-            width = 50,
+            width = 80,
             height=10,  # Imposta un'altezza fissa se necessario
             anchor="center"
             )
