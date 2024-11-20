@@ -163,11 +163,11 @@ cython_debug/
 
 #Project related
 
-img/*.jpg
-img/*.png
-img/*.gif
-img/*.bmp
-img/*.jpeg
+#img/*.jpg
+#img/*.png
+#img/*.gif
+#img/*.bmp
+#img/*.jpeg
 
 #exclusion list
-img/!placeholder.jpg
+#img/!placeholder.jpg

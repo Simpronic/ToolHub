@@ -9,10 +9,18 @@ from PIL import Image,ImageTk
 
 class Hub:
 
-    def __init__(self):
+    def __init__(self,root):
         self.config = cp.ConfigParser()
         self.config.read('configs/config.cfg')
         self.d_r = Retriver(self.config.get("PATHS","csv_path"))
+        self.root = root
+        self.root.title("Company Hub")
+        self.root.geometry("400x300")  # Imposta una dimensione per la finestra, se necessario
+        # Crea un pannello (Frame) per contenere i record
+        self.panel = tk.Frame(self.root)
+        self.panel.pack(padx=10, pady=10, fill="both", expand=True)
+        self.__create_record_widgets(self.panel)
+
 
     def __clickEvent(self,record):
         print(f"You selected {record["Name"]}")
@@ -24,7 +32,7 @@ class Hub:
             if record.Image == "nan" or record.Image == None:
                 image = PhotoImage(record.Image)
             else:
-              image = PhotoImage(self.config.get("PATHS","placeholder_path"))  
+                image = PhotoImage(self.config.get("PATHS","placeholder_path"))  
             button = tk.Button(
             parent,
             text=f"{record.Name}\n{record.Description}",
@@ -38,16 +46,7 @@ class Hub:
         button.pack(pady=5, fill="x", padx=10)  # Usa 'fill="x"' per far sì che il pannello si adatti
 
 
-    def create_panel(self):
-        root = tk.Tk()
-        root.title("Company Hub")
-        root.geometry("400x300")  # Imposta una dimensione per la finestra, se necessario
-        # Crea un pannello (Frame) per contenere i record
-        panel = tk.Frame(root)
-        panel.pack(padx=10, pady=10, fill="both", expand=True)
-        self.__create_record_widgets(panel)
-        root.mainloop()
 
-hub = Hub()
-
-hub.create_panel()
+root = tk.Tk()
+hub = Hub(root)
+root.mainloop()
